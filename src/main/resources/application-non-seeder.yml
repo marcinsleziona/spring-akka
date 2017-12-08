@@ -1,0 +1,9 @@
+
+userGenerator:
+  enabled: false
+
+akka:
+  remote:
+    netty:
+      tcp:
+        port: 0

@@ -1,0 +1,57 @@
+server:
+  context-path: /akka-test
+  port: 8080
+
+spring:
+  application:
+    name: akka-test
+  datasource:
+    jadira:
+      usertype:
+        autoRegisterUserTypes: true
+        databaseZone: jvm
+        javaZone: jvm
+
+#management endpoints
+endpoints:
+  restart:
+    enabled: true
+    sensitive: false
+  shutdown:
+    enabled: true
+    sensitive: false
+  actuator:
+    enabled: true
+    path: /actuator
+    sensitive: false
+  jolokia:
+    sensitive: false
+    enabled: true
+    path: /jolokia
+
+#discovery client
+eureka:
+  instance:
+    statusPageUrlPath: ${server.context-path}${management.context-path}/info
+    healthCheckUrlPath: ${server.context-path}${management.context-path}/health
+    homePageUrlPath: ${server.context-path}
+    metadata-map:
+      management.context-path: ${server.context-path}${management.context-path}
+    prefer-ip-address: true
+  client:
+    enabled: false
+
+info:
+  app:
+    name: ${project.name}
+    version: ${project.version}
+
+jolokia:
+  config:
+    debug: true
+
+management:
+  context-path: /manage
+  security:
+    enabled: false
+

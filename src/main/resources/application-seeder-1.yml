@@ -1,0 +1,9 @@
+
+userGenerator:
+  enabled: true
+
+akka:
+  remote:
+    netty:
+      tcp:
+        port: 2551
