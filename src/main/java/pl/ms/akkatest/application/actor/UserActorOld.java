@@ -4,16 +4,17 @@ import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.OneForOneStrategy;
 import akka.actor.SupervisorStrategy;
-import akka.cluster.pubsub.DistributedPubSub;
 import akka.cluster.pubsub.DistributedPubSubMediator;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import akka.japi.pf.DeciderBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import pl.ms.akkatest.application.message.StopMeMessage;
 import pl.ms.akkatest.application.message.ThrowRuntimeExceptionMessage;
 import pl.ms.akkatest.application.message.UserMessage;
 import pl.ms.akkatest.domain.UserRepository;
-import pl.ms.akkatest.util.ApplicationContextProvider;
 import scala.concurrent.duration.Duration;
 
 import java.util.Optional;
@@ -25,17 +26,15 @@ import static akka.actor.SupervisorStrategy.restart;
 /*
  * Created by Marcin on 2017-10-31 13:09
  */
-public class UserActor extends AbstractActor {
+@Component
+@Scope("prototype")
+public class UserActorOld extends AbstractActor {
 
-    public static final String BEAN_NAME = "userActor";
+    public static final String BEAN_NAME = "userActorOld";
     private LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
 
-    public UserActor() {
-        ActorRef mediator = DistributedPubSub.get(getContext().system()).mediator();
-
-        // register to the path
-        mediator.tell(new DistributedPubSubMediator.Put(getSelf()), getSelf());
-    }
+    @Autowired
+    private UserRepository userRepository;
 
     private static SupervisorStrategy strategy =
             new OneForOneStrategy(5, Duration.create(1, TimeUnit.MINUTES), DeciderBuilder.
@@ -63,7 +62,7 @@ public class UserActor extends AbstractActor {
     public Receive createReceive() {
         return receiveBuilder()
                 .match(UserMessage.class, userMessage -> {
-                    getUserRepository().save(userMessage.getUser());
+                    userRepository.save(userMessage.getUser());
                     log.info("UserMessage (" + userMessage.getUser() + ") in (" + this + ")");
                 })
                 .match(ThrowRuntimeExceptionMessage.class, throwRuntimeExceptionMessage -> {
@@ -75,9 +74,5 @@ public class UserActor extends AbstractActor {
                     getContext().stop(getSelf());
                 })
                 .build();
-    }
-
-    UserRepository getUserRepository() {
-        return ApplicationContextProvider.getManagedBean(UserRepository.class);
     }
 }

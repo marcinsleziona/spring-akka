@@ -32,6 +32,9 @@ public class AkkaTestApplication {
     @Bean
     public ActorSystem actorSystem(Config akkaConfiguration) {
         ActorSystem system = ActorSystem.create("AkkaTestActorSystem", akkaConfiguration);
+
+        system.actorOf(Props.create(UserActor.class), UserActor.BEAN_NAME);
+
         return system;
     }
 
@@ -47,13 +50,9 @@ public class AkkaTestApplication {
         return actorSystem.actorOf(Props.create(SimpleClusterListener.class), "simpleClusterListener");
     }
 
-    @Bean
-    public ActorRef mediator(ActorSystem actorSystem) {
-        return DistributedPubSub.get(actorSystem).mediator();
-    }
+//    @Bean
+//    public ActorRef mediator(ActorSystem actorSystem) {
+//        return DistributedPubSub.get(actorSystem).mediator();
+//    }
 
-    @Bean
-    public ActorRef userActor(SpringExtension springExtension, ActorSystem actorSystem) {
-        return actorSystem.actorOf(springExtension.props(UserActor.BEAN_NAME), UserActor.BEAN_NAME);
-    }
 }

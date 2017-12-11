@@ -39,7 +39,7 @@ public class SupervisorActor extends AbstractActor {
     public void preStart() throws Exception {
         List<Routee> routees = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
-            ActorRef actor = getContext().actorOf(springExtension.props(UserActor.BEAN_NAME));
+            ActorRef actor = getContext().actorOf(springExtension.props(UserActorOld.BEAN_NAME));
             getContext().watch(actor);
             routees.add(new ActorRefRoutee(actor));
         }
