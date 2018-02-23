@@ -22,6 +22,8 @@ import pl.ms.akkatest.util.SpringExtension;
 @EnableScheduling
 public class AkkaTestApplication {
 
+    @Value("${akka.remote.netty.tcp.hostname}")
+    private String hostname;
     @Value("${akka.remote.netty.tcp.port}")
     private int port;
 
@@ -40,9 +42,32 @@ public class AkkaTestApplication {
 
     @Bean
     public Config akkaConfiguration() {
+//        return ConfigFactory.parseString(
+//                "akka.remote.netty.tcp.port=" + port).withFallback(
+//                ConfigFactory.load());
+
         return ConfigFactory.parseString(
-                "akka.remote.netty.tcp.port=" + port).withFallback(
-                ConfigFactory.load());
+                "akka {\n" +
+                    "  actor {\n" +
+                    "    provider = \"cluster\"\n" +
+                    "  }\n" +
+                    "\n" +
+                    "  remote {\n" +
+                    "    log-remote-lifecycle-events = off\n" +
+                    "    netty.tcp {\n" +
+                    "      hostname = \""+hostname+"\"\n" +
+                    "      port = "+port+"\n" +
+                    "    }\n" +
+                    "  }\n" +
+                    "  cluster {\n" +
+                    "      seed-nodes = [\n" +
+                    "        \"akka.tcp://AkkaTestActorSystem@localhost:2551\",\n" +
+                    "        \"akka.tcp://AkkaTestActorSystem@localhost:2552\"\n" +
+                    "      ]\n" +
+                    "\n" +
+                    "      auto-down-unreachable-after = 300s\n" +
+                    "    }\n" +
+                    "}").withFallback(ConfigFactory.load());
     }
 
     @Bean
