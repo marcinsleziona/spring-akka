@@ -22,6 +22,9 @@ import pl.ms.akkatest.util.SpringExtension;
 @EnableScheduling
 public class AkkaTestApplication {
 
+    @Value("${akka.actor-system}")
+    private String actorSystem;
+
     @Value("${akka.remote.netty.tcp.hostname}")
     private String hostname;
     @Value("${akka.remote.netty.tcp.port}")
@@ -33,7 +36,7 @@ public class AkkaTestApplication {
 
     @Bean
     public ActorSystem actorSystem(Config akkaConfiguration) {
-        ActorSystem system = ActorSystem.create("AkkaTestActorSystem", akkaConfiguration);
+        ActorSystem system = ActorSystem.create(actorSystem, akkaConfiguration);
 
         system.actorOf(Props.create(UserActor.class), UserActor.BEAN_NAME);
 
@@ -61,8 +64,8 @@ public class AkkaTestApplication {
                     "  }\n" +
                     "  cluster {\n" +
                     "      seed-nodes = [\n" +
-                    "        \"akka.tcp://AkkaTestActorSystem@localhost:2551\",\n" +
-                    "        \"akka.tcp://AkkaTestActorSystem@localhost:2552\"\n" +
+                    "        \"akka.tcp://"+actorSystem+"@localhost:2551\",\n" +
+                    "        \"akka.tcp://"+actorSystem+"@localhost:2552\"\n" +
                     "      ]\n" +
                     "\n" +
                     "      auto-down-unreachable-after = 300s\n" +

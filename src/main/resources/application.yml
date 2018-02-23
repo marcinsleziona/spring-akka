@@ -55,3 +55,6 @@ management:
   security:
     enabled: false
 
+akka:
+  actor-system: AkkaTestActorSystem
+
