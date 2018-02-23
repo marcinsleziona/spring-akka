@@ -8,3 +8,7 @@ akka:
       tcp:
         hostname: localhost
         port: 2552
+  cluster:
+    seed-nodes:
+      - localhost:2551
+      - localhost:2552
