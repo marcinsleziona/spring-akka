@@ -27,13 +27,6 @@ import java.util.List;
 @EnableConfigurationProperties
 public class AkkaTestApplication {
 
-//    @Value("${akka.actor-system}")
-//    private String actorSystem;
-//    @Value("${akka.remote.netty.tcp.hostname}")
-//    private String hostname;
-//    @Value("${akka.remote.netty.tcp.port}")
-//    private int port;
-
     public static void main(String[] args) {
         SpringApplication.run(AkkaTestApplication.class, args);
     }
@@ -41,18 +34,12 @@ public class AkkaTestApplication {
     @Bean
     public ActorSystem actorSystem(AkkaProperties akkaProperties, Config akkaConfiguration) {
         ActorSystem system = ActorSystem.create(akkaProperties.getActorSystem(), akkaConfiguration);
-
         system.actorOf(Props.create(UserActor.class), UserActor.BEAN_NAME);
-
         return system;
     }
 
     @Bean
     public Config akkaConfiguration(AkkaProperties akkaProperties) {
-//        return ConfigFactory.parseString(
-//                "akka.remote.netty.tcp.port=" + port).withFallback(
-//                ConfigFactory.load());
-//        System.out.println(buildSeedNodes(akkaProperties));
         return ConfigFactory.parseString(
                 "akka {\n" +
                         "  actor {\n" +
@@ -103,10 +90,5 @@ public class AkkaTestApplication {
         sb.append("      ]\n");
         return sb.toString();
     }
-
-//    @Bean
-//    public ActorRef mediator(ActorSystem actorSystem) {
-//        return DistributedPubSub.get(actorSystem).mediator();
-//    }
 
 }

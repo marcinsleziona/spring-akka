@@ -1,6 +1,6 @@
 
 userGenerator:
-  enabled: false
+  enabled: true
 
 akka:
   remote:
@@ -10,5 +10,5 @@ akka:
         port: 2552
   cluster:
     seed-nodes:
-      - localhost:2551
       - localhost:2552
+      - localhost:2551
