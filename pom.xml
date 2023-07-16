@@ -29,7 +29,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
 
-        <version.akka>2.5.7</version.akka>
+        <version.akka>2.5.16</version.akka>
         <version.commons-lang3>3.4</version.commons-lang3>
         <version.springfox>2.6.1</version.springfox>
     </properties>
